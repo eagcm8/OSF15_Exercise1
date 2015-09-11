@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-
+#include "../../debug.h"
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -34,8 +34,13 @@ bool create_matrix (Matrix_t** new_matrix, const char* name, const unsigned int 
 						const unsigned int cols) {
 
 	//TODO ERROR CHECK INCOMING PARAMETERS
+	check(new_matrix != NULL, "Pointer cannot be NULL.");
+	check(strlen(name)+1 < MATRIX_NAME_LEN, "MATRIX_NAME_LEN cannot be greater than 25 characters.");
+	check(rows != 0, "Rows cannot be of length 0");
+	check(cols != 0, "Cols cannot be of length 0");
 
-	*new_matrix = calloc(1,sizeof(Matrix_t));
+
+	*new_matrix = (1,sizeof(Matrix_t));
 	if (!(*new_matrix)) {
 		return false;
 	}
@@ -52,26 +57,49 @@ bool create_matrix (Matrix_t** new_matrix, const char* name, const unsigned int 
 	strncpy((*new_matrix)->name,name,len);
 	return true;
 
+error:
+	return false;
 }
 
 	//TODO FUNCTION COMMENT
-
+/* 
+ * PURPOSE: frees a matrix from memory, destroying it
+ * INPUTS: 
+ *	matrix m
+ * RETURN:
+ *  nothing is returned
+ *
+ **/
 void destroy_matrix (Matrix_t** m) {
 
 	//TODO ERROR CHECK INCOMING PARAMETERS
-	
+	check(m != NULL, "Pointer cannot be NULL.");
+
 	free((*m)->data);
 	free(*m);
 	*m = NULL;
+error:
+	return;
 }
 
 
 	
 	//TODO FUNCTION COMMENT
+/* 
+ * PURPOSE: checks to see if two matrices are equal
+ * INPUTS: 
+ *	matrix a and matrix b
+ * RETURN:
+ *  if the two matrices are equal, true is returned, else false
+ *
+ **/
 bool equal_matrices (Matrix_t* a, Matrix_t* b) {
 
 	//TODO ERROR CHECK INCOMING PARAMETERS
-	
+	check(a != NULL, "Pointer cannot be NULL.");
+	check(b != NULL, "Pointer cannot be NULL.");
+
+
 	if (!a || !b || !a->data || !b->data) {
 		return false;	
 	}
@@ -81,13 +109,25 @@ bool equal_matrices (Matrix_t* a, Matrix_t* b) {
 		return true;
 	}
 	return false;
+error:
+	return false;
 }
 
 	//TODO FUNCTION COMMENT
+/* 
+ * PURPOSE: duplicates a matrix
+ * INPUTS: 
+ *	source matrix and destination matrix
+ * RETURN:
+ *  source and destination matrix
+ *
+ **/
 bool duplicate_matrix (Matrix_t* src, Matrix_t* dest) {
 
 
 	//TODO ERROR CHECK INCOMING PARAMETERS
+	check(src != NULL, "Pointer cannot be NULL.");
+	check(dest != NULL, "Pointer cannot be NULL.");
 
 	if (!src) {
 		return false;
@@ -98,12 +138,24 @@ bool duplicate_matrix (Matrix_t* src, Matrix_t* dest) {
 	unsigned int bytesToCopy = sizeof(unsigned int) * src->rows * src->cols;
 	memcpy(dest->data,src->data, bytesToCopy);	
 	return equal_matrices (src,dest);
+
+error:
+	return false;
 }
 
 	//TODO FUNCTION COMMENT
+/* 
+ * PURPOSE: performs a bitwise shift to either the left or right on a matrix
+ * INPUTS: 
+ *	matrix a
+ * RETURN:
+ *  a boolean value
+ *
+ **/
 bool bitwise_shift_matrix (Matrix_t* a, char direction, unsigned int shift) {
 	
 	//TODO ERROR CHECK INCOMING PARAMETERS
+	check(a != NULL, "Pointer cannot be NULL.");
 	if (!a) {
 		return false;
 	}
@@ -129,12 +181,25 @@ bool bitwise_shift_matrix (Matrix_t* a, char direction, unsigned int shift) {
 	}
 	
 	return true;
+error:
+	return false;
 }
 
 	//TODO FUNCTION COMMENT
+/* 
+ * PURPOSE: adds matrices together
+ * INPUTS: 
+ *	matrices a, b, and c
+ * RETURN:
+ *  the sum of matrices
+ *
+ **/
 bool add_matrices (Matrix_t* a, Matrix_t* b, Matrix_t* c) {
 
 	//TODO ERROR CHECK INCOMING PARAMETERS
+	check(a != NULL, "Pointer cannot be NULL.");
+	check(b != NULL, "Pointer cannot be NULL.");
+	check(c != NULL, "Pointer cannot be NULL.");
 
 	if (a->rows != b->rows && a->cols != b->cols) {
 		return false;
@@ -146,13 +211,24 @@ bool add_matrices (Matrix_t* a, Matrix_t* b, Matrix_t* c) {
 		}
 	}
 	return true;
+
+error:
+	return false;
 }
 
 	//TODO FUNCTION COMMENT
+/* 
+ * PURPOSE: prints a matrix
+ * INPUTS: 
+ *	matrix m
+ * RETURN:
+ *  nothing is returned
+ *
+ **/
 void display_matrix (Matrix_t* m) {
 	
 	//TODO ERROR CHECK INCOMING PARAMETERS
-
+	check(m != NULL, "Pointer cannot be NULL.");
 
 	printf("\nMatrix Contents (%s):\n", m->name);
 	printf("DIM = (%u,%u)\n", m->rows, m->cols);
@@ -163,14 +239,23 @@ void display_matrix (Matrix_t* m) {
 		printf("\n");
 	}
 	printf("\n");
-
+error:
+	return;
 }
 
 	//TODO FUNCTION COMMENT
+/* 
+ * PURPOSE: reads matrix from file
+ * INPUTS: 
+ *	matrix input file name, matrix m
+ * RETURN:
+ *  if the file can be read, true is returned, else false
+ *
+ **/
 bool read_matrix (const char* matrix_input_filename, Matrix_t** m) {
 	
 	//TODO ERROR CHECK INCOMING PARAMETERS
-
+	check(m != NULL, "Pointer cannot be NULL.");
 
 	int fd = open(matrix_input_filename,O_RDONLY);
 	if (fd < 0) {
@@ -297,12 +382,23 @@ bool read_matrix (const char* matrix_input_filename, Matrix_t** m) {
 
 	}
 	return true;
+error:
+	return false;
 }
-
+/* 
+ * PURPOSE: writes matrix to file
+ * INPUTS: 
+ *	matrix output file name, matrix m
+ * RETURN:
+ *  if the matrix is written properly, true is returned, else false
+ *
+ **/
 	//TODO FUNCTION COMMENT
 bool write_matrix (const char* matrix_output_filename, Matrix_t* m) {
 	
 	//TODO ERROR CHECK INCOMING PARAMETERS
+	check(m != NULL, "Pointer cannot be NULL.");
+	check(matrix_output_filename != NULL, "Pointer cannot be NULL.");
 
 	int fd = open (matrix_output_filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
 	/* ERROR HANDLING USING errorno*/
@@ -365,12 +461,24 @@ bool write_matrix (const char* matrix_output_filename, Matrix_t* m) {
 	free(output_buffer);
 
 	return true;
+error:
+	return false;
 }
 
 	//TODO FUNCTION COMMENT
+
+/* 
+ * PURPOSE: creates random matrix
+ * INPUTS: 
+ *	matrix m, start range, end range
+ * RETURN:
+ *  if the matrix can be created, true is returned, else false
+ *
+ **/
 bool random_matrix(Matrix_t* m, unsigned int start_range, unsigned int end_range) {
 	
 	//TODO ERROR CHECK INCOMING PARAMETERS
+	check(m != NULL, "Pointer cannot be NULL.");
 
 	for (unsigned int i = 0; i < m->rows; ++i) {
 		for (unsigned int j = 0; j < m->cols; ++j) {
@@ -378,21 +486,47 @@ bool random_matrix(Matrix_t* m, unsigned int start_range, unsigned int end_range
 		}
 	}
 	return true;
+error:
+	return false;
 }
 
 /*Protected Functions in C*/
 
 	//TODO FUNCTION COMMENT
+/* 
+ * PURPOSE: loads matrix into memory
+ * INPUTS: 
+ *	matrix m, data pointer
+ * RETURN:
+ *  nothing is returned
+ *
+ **/
 void load_matrix (Matrix_t* m, unsigned int* data) {
 	
 	//TODO ERROR CHECK INCOMING PARAMETERS
+	check(m != NULL, "Pointer cannot be NULL.");
+	check(data != NULL, "Pointer cannot be NULL.");
+
 	memcpy(m->data,data,m->rows * m->cols * sizeof(unsigned int));
+error:
+	return;
 }
 
 	//TODO FUNCTION COMMENT
+/* 
+ * PURPOSE: adds a matrix to an array
+ * INPUTS: 
+ *	matrix mats, matrix new_matrix, unsigned in num_mats
+ * RETURN:
+ *  the position of the matrix in the array
+ *
+ **/
 unsigned int add_matrix_to_array (Matrix_t** mats, Matrix_t* new_matrix, unsigned int num_mats) {
 	
 	//TODO ERROR CHECK INCOMING PARAMETERS
+	check(mats != NULL, "Pointer cannot be NULL.");
+	check(new_matrix != NULL, "Pointer cannot be NULL.");
+
 	static long int current_position = 0;
 	const long int pos = current_position % num_mats;
 	if ( mats[pos] ) {
@@ -401,4 +535,6 @@ unsigned int add_matrix_to_array (Matrix_t** mats, Matrix_t* new_matrix, unsigne
 	mats[pos] = new_matrix;
 	current_position++;
 	return pos;
+error:
+	return 1;
 }

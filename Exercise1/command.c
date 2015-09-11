@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-
+#include "../../debug.h"
 #include "command.h"
 
 #define MAX_CMD_COUNT 50
@@ -10,9 +10,21 @@
 
 
 	//TODO FUNCTION COMMENT
+/* 
+ * PURPOSE: parses command line arguments
+ * INPUTS: 
+ *	character pointer input, Commands_t** cmd
+ * RETURN:
+ *  returns true if args are accepted, else false
+ *
+ **/
 bool parse_user_input (const char* input, Commands_t** cmd) {
 	
 	//TODO ERROR CHECK INCOMING PARAMETERS
+
+	check(cmd != NULL, "Pointer cannot be NULL.");
+
+	check(input != NULL, "Pointer cannot be NULL.");
 
 	char *string = strdup(input);
 	
@@ -34,12 +46,23 @@ bool parse_user_input (const char* input, Commands_t** cmd) {
 	}
 	free(string);
 	return true;
+error:
+	return false;
 }
 
 	//TODO FUNCTION COMMENT
+/* 
+ * PURPOSE: frees commands from memory
+ * INPUTS: 
+ *	Commands_t double pointer cmd
+ * RETURN:
+ *  nothing is returned
+ *
+ **/
 void destroy_commands(Commands_t** cmd) {
 
 	//TODO ERROR CHECK INCOMING PARAMETERS
+	check(cmd != NULL, "Pointer cannot be NULL.");
 	
 	for (int i = 0; i < (*cmd)->num_cmds; ++i) {
 		free((*cmd)->cmds[i]);
@@ -47,5 +70,7 @@ void destroy_commands(Commands_t** cmd) {
 	free((*cmd)->cmds);
 	free((*cmd));
 	*cmd = NULL;
+error:
+	return;
 }
 

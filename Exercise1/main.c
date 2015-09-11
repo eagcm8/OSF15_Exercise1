@@ -5,8 +5,8 @@
 #include <math.h>
 #include <stdbool.h>
 #include <time.h>
-
-#include<readline/readline.h>
+#include "../../debug.h"
+#include <readline/readline.h>
 
 #include "command.h"
 #include "matrix.h"
@@ -17,8 +17,16 @@ unsigned int find_matrix_given_name (Matrix_t** mats, unsigned int num_mats,
 
 // TODO complete the defintion of this function. 
 void destroy_remaining_heap_allocations(Matrix_t **mats, unsigned int num_mats);
-
+	
 	//TODO FUNCTION COMMENT
+/* 
+ * PURPOSE: runs matlab
+ * INPUTS: 
+ *	int argc char **argv
+ * RETURN:
+ *  0 if run properly, else -1
+ *
+ **/
 int main (int argc, char **argv) {
 	srand(time(NULL));		
 	char *line = NULL;
@@ -29,6 +37,7 @@ int main (int argc, char **argv) {
 
 	Matrix_t *temp = NULL;
 	create_matrix (&temp,"temp_mat", 5, 5); // TODO ERROR CHECK
+
 	add_matrix_to_array(mats,temp, 10); //TODO ERROR CHECK NEEDED
 	int mat_idx = find_matrix_given_name(mats,10,"temp_mat");
 
@@ -61,9 +70,18 @@ int main (int argc, char **argv) {
 }
 
 	//TODO FUNCTION COMMENT
+/* 
+ * PURPOSE: runs command line args
+ * INPUTS: 
+ *	cmd pointer, mats double pointerm unsigned int num_mats
+ * RETURN:
+ *  nothing
+ *
+ **/
 void run_commands (Commands_t* cmd, Matrix_t** mats, unsigned int num_mats) {
 	//TODO ERROR CHECK INCOMING PARAMETERS
-
+	check(cmd != NULL, "Pointer cannot be NULL.");
+	check(mats != NULL, "Pointer cannot be NULL.");
 
 	/*Parsing and calling of commands*/
 	if (strncmp(cmd->cmds[0],"display",strlen("display") + 1) == 0
@@ -192,25 +210,56 @@ void run_commands (Commands_t* cmd, Matrix_t** mats, unsigned int num_mats) {
 	else {
 		printf("Not a command in this application\n");
 	}
+error:
+	return;
 
 }
 
 	//TODO FUNCTION COMMENT
+
+/* 
+ * PURPOSE: searched for a given matrix
+ * INPUTS: 
+ *	mats, num_mats, target character pointer
+ * RETURN:
+ *  i if run properly, else -1
+ *
+ **/
 unsigned int find_matrix_given_name (Matrix_t** mats, unsigned int num_mats, const char* target) {
 	//TODO ERROR CHECK INCOMING PARAMETERS
-
+	check(mats != NULL, "Pointer cannot be NULL.");
+	check(target != NULL, "Pointer cannot be NULL.");
 	for (int i = 0; i < num_mats; ++i) {
 		if (strncmp(mats[i]->name,target,strlen(mats[i]->name)) == 0) {
 			return i;
 		}
 	}
 	return -1;
+error:
+	return -1;
 }
 
 	//TODO FUNCTION COMMENT
+/* 
+ * PURPOSE: clears memory
+ * INPUTS: 
+ *	mats, num_mats
+ * RETURN:
+ *  nothing
+ *
+ **/
 void destroy_remaining_heap_allocations(Matrix_t **mats, unsigned int num_mats) {
 	
 	//TODO ERROR CHECK INCOMING PARAMETERS
+	check(mats != NULL, "Pointer cannot be NULL.");
 
 	// COMPLETE MISSING MEMORY CLEARING HERE
+	for (int i = 0; i < num_mats; ++i)
+	{
+		/* code */
+		free(mats);
+		mats++;
+	}
+error:
+	return;
 }
