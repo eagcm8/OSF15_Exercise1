@@ -40,7 +40,7 @@ bool create_matrix (Matrix_t** new_matrix, const char* name, const unsigned int 
 	check(cols != 0, "Cols cannot be of length 0");
 
 
-	*new_matrix = (1,sizeof(Matrix_t));
+	*new_matrix = calloc(1,sizeof(Matrix_t));
 	if (!(*new_matrix)) {
 		return false;
 	}
